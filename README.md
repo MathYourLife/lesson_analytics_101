@@ -10,11 +10,11 @@ A introduction to exploring a simple data set.
 
 ## Goals
 
-At the end of the lesson, students should be able to answer the following questions.
+At the end of the lesson, students should be able to answer the following questions and/or
 
 1. What is analytics?
 1. Understand the math behind the methods.
-
+1. What happens after the analysis? (Repeatable?, destined for "real-time" monitoring?, ...)
 
 ## Lesson Plan
 
@@ -32,6 +32,7 @@ Starting at 3 go around the room adding 7.
 1. What experiences do students have with analyzing data?
 1. Discuss calculations such as mean, median and discuss if special considerations would need to be made once the data is too large for a single machine.
 
+****
 
 ### Linearized Models
 
@@ -97,6 +98,50 @@ With additional insight, can you upgrade your current model to provide a more ac
         * How do you measure the model error?
         * Model limitations (linearized systems)
 
+****
+
 ### Gaussian Distributions
+
+Problem:
+
+Given steady time series data in column C, can you determine if the process is functioning properly?
+
+**Pass 1 - Investigate the data**
+
+6 Sigma - Control Charts Checks
+
+CL = x_bar
+UCL = CL + 3 sigma
+LCL = CL - 3 sigma
+
+* If 1 point > 3 sigma
+
+TODO: expand this section
+
+Concepts:
+
+* Process control
+* Statistical significance
+* Steady vs diurnal
+
+****
+
+### Unsupervised Clustering
+
+Problem:
+
+Data sets may sometimes contain multiple subgroups.  Under these conditions two approaches are generally taken.
+
+1. User predefines groups based on current knowledge of the system and allocates data points to the groups.
+1. User defines a method for grouping, and the groups are generated to best conform to the rules.
+
+TODO: expand this section
+
+Concepts:
+
+* Unsupervised learning
+* KMeans clustering (concept and algorithm)
+* Principle Component Analysis
+* Model Assessment
 
 
