@@ -1,50 +1,40 @@
 #!/usr/bin/env python
-#
-# Copyright 2014 Daniel Couture (GNU GPLv3)
-#
 """
 Implement a time series control chart.
+
+Copyright 2014 Daniel Couture (GNU GPLv3)
 
 Usage:
 
     cat data | python{3} control_chart.py
 
-Errors to stdout:
+Control Tests:
 
     [x] is < 3 sigma
     [x] is > 3 sigma
-    [x] is 2/3 points > 2 sigma
-    [x] is 2/3 points < 2 sigma
-    [x] is 4/5 points > 1 sigma
-    [x] is 4/5 points < 1 sigma
-    [x] is 8/8 points > centerline
-    [x] is 8/8 points < centerline
-    [x] is 10/11 points > centerline
-    [x] is 10/11 points < centerline
-    [x] is 12/14 points > centerline
-    [x] is 12/14 points < centerline
-    [x] is 14/17 points > centerline
-    [x] is 14/17 points < centerline
-    [x] is 16/20 points > centerline
-    [x] is 16/20 points < centerline
+    [..] is 2/3 points > 2 sigma
+    [..] is 2/3 points < 2 sigma
+    [..] is 4/5 points > 1 sigma
+    [..] is 4/5 points < 1 sigma
+    [..] is 8/8 points > centerline
+    [..] is 8/8 points < centerline
 
-Test Source:
+Centerline Shift Tests:
+
+    [..] is 10/11 points > centerline
+    [..] is 10/11 points < centerline
+    [..] is 12/14 points > centerline
+    [..] is 12/14 points < centerline
+    [..] is 14/17 points > centerline
+    [..] is 14/17 points < centerline
+    [..] is 16/20 points > centerline
+    [..] is 16/20 points < centerline
+
+References:
     Implementing Six Sigma
     Smarter Solutions Using Statistical Methods
     Forrest W. Breyfogle III
     Second Edition, pp. 221
-
-Out of control tests:
-    1 data point is > 3 sigma (or < -3 sigma)
-    2 of 3 points are > 2 sigma (or < -2 sigma)
-    4 of 5 points are > 1 sigma (or < -1 sigma)
-    8 points are on one side of the mean
-
-Shift in centerline tests:
-    >= 10 out of 11 points are on one side of the mean
-    >= 12 out of 14 points are on one side of the mean
-    >= 14 out of 17 points are on one side of the mean
-    >= 16 out of 20 points are on one side of the mean
 """
 
 import os
@@ -54,7 +44,22 @@ from argparse import ArgumentParser
 
 
 class Window(object):
+    """
+    Create a variable sized rolling window of data points.
 
+    Usage::
+
+        w = Window(4)
+        for x in range(10):
+            w.append(x)
+        print("Rolling average for %s is %g" % (w, w.data.mean()))
+        # Rolling average for [ 8.  9.  6.  7.] is 7.5
+
+    :param n: size of the rolling window
+    :type  n: int
+    :param init: Initialize all entries to a value (np.nan by default)
+    :type  init: numeric
+    """
     def __init__(self, n, init=None):
         self.idx = 0
         self.n = n
@@ -77,13 +82,23 @@ class Window(object):
 
 
 def err_out(msg):
+    """
+    Helper function to write to stdout
+
+    :param msg: message to write
+    :type  msg: str
+    """
     sys.stderr.write("%s\n" % msg)
     sys.stderr.flush()
 
 
 def test_3_sigma(options):
+    """
+    Create a test for a single value outside 3 standard deviations
+    """
     lcl = options.m - 3 * options.s
     ucl = options.m + 3 * options.s
+
     def test(x):
         if x < lcl:
             err_out("%g is < 3 sigma" % x)
@@ -91,10 +106,15 @@ def test_3_sigma(options):
             err_out("%g is > 3 sigma" % x)
     return test
 
+
 def test_2_sigma(options):
+    """
+    Create a test for 2 out of 3 values outside of 2 standard deviations
+    """
     w = Window(3, init=options.m)
     lcl = options.m - 2 * options.s
     ucl = options.m + 2 * options.s
+
     def test(x):
         w.append(x)
         if np.sum(w.data > ucl) >= 2:
@@ -105,9 +125,13 @@ def test_2_sigma(options):
 
 
 def test_1_sigma(options):
+    """
+    Create a test for 4 out of 5 values outside of 1 standard deviation
+    """
     w = Window(5, init=options.m)
     lcl = options.m - 1 * options.s
     ucl = options.m + 1 * options.s
+
     def test(x):
         w.append(x)
         if np.sum(w.data > ucl) >= 4:
@@ -119,6 +143,8 @@ def test_1_sigma(options):
 
 def test_cl_shift(options):
     """
+    Create tests for centerline shifts
+
     8 out of 8 points are on one side of the mean
     >= 10 out of 11 points are on one side of the mean
     >= 12 out of 14 points are on one side of the mean
@@ -133,19 +159,29 @@ def test_cl_shift(options):
         (16, Window(20, init=options.m)),
     ]
     cl = options.m
+
     def test(x):
         for n, w in windows:
             w.append(x)
             if np.sum(w.data > cl) >= n:
                 err_out("%s is %g/%g points > centerline" %
-                    (w.data, n, w.n))
+                        (w.data, n, w.n))
             elif np.sum(w.data < cl) >= n:
                 err_out("%s is %g/%g points < centerline" %
-                    (w.data, n, w.n))
+                        (w.data, n, w.n))
     return test
 
 
 def control_chart(stream, options):
+    """
+    Run the control chart tests.  For each new value yielded by the stream,
+    pass it to each of the tests for checking.
+
+    :param stream: generator that yields the next value to test
+    :type  stream: generator
+    :param options: values for defining the tests (mean, standard deviation)
+    :type  options: argparse.Namespace
+    """
     tests = []
     tests.append(test_3_sigma(options))
     tests.append(test_2_sigma(options))
@@ -155,9 +191,16 @@ def control_chart(stream, options):
     for x in stream:
         for test in tests:
             test(x)
+    return 0
 
 
 def load_stream(input_stream):
+    """
+    Format the input stream to create numeric data points.
+
+    :param input_stream: data generator.  Lines are excepted of str type
+    :type  input_stream: generator (sys.stdin)
+    """
     for line in input_stream:
         clean_line = line.strip()
         if not clean_line:
@@ -172,6 +215,9 @@ def load_stream(input_stream):
 
 
 def parse_args():
+    """
+    Parse out testing arguments.
+    """
     _, fname = os.path.split(__file__)
     usage = "cat data | python %s" % fname
 
@@ -190,9 +236,12 @@ def parse_args():
 
 
 def main():
+    """
+    Setup and run the tests from a stdin stream of data
+    """
     options = parse_args()
-    control_chart(load_stream(sys.stdin), options)
+    return control_chart(load_stream(sys.stdin), options)
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
