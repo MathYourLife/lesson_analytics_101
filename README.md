@@ -14,7 +14,8 @@ At the end of the lesson, students should be able to answer the following questi
 
 1. What is analytics?
 1. Understand the math behind the methods.
-1. What happens after the analysis? (Repeatable?, destined for "real-time" monitoring?, ...)
+1. Is the analysis repeatable? (by someone else)
+1. Are there limitations to the model's use?
 
 ## Lesson Plan
 
@@ -32,13 +33,26 @@ Starting at 3 go around the room adding 7.
 1. What experiences do students have with analyzing data?
 1. Discuss calculations such as mean, median and discuss if special considerations would need to be made once the data is too large for a single machine.
 
+
+
 ****
 
 ### Linearized Models
 
 Problem:
 
-Your boss has just provided you with the following data set (columns A and B of sample data set) with the direction to determine a model of given A, predict B.
+Your boss presents you with something that you determine is a data set which calls for the predication of column B based on column A.
+
+Questions to pose:
+
+* Is there a time/sequence dependency?
+* Is there a simple model that can reasonably predict column B given column A?
+* For a random point A, how close does your model get to the point B?
+* Is there a limitation to the input or your model?
+* Could the model be improved?
+* What could be added to the model to improve it's accuracy?
+* Why are linearized models more prevalent?
+
 
 Data used here was created with function of the form
 $B = \left(m * A + b \right) + \left(c * e^{A/k} \right) + w$
@@ -49,7 +63,7 @@ $w ~ N(0, 1)$
 
 With a extremely limited quantity of time, create a reasonable model of the system.
 
-1. Students spend ~5 min investigating data from columns A and B
+1. Students spend ~5-10 min investigating data from columns A and B
 1. Little to no information is provided about the source or underlying structure.
 1. Circulate through the groups and
 
@@ -89,7 +103,7 @@ $B = \left(-0.5 * A + 42 \right) + \left(c * e^{A/-10} \right) + w$
 With additional insight, can you upgrade your current model to provide a more accurate prediction?
 
 1. If groups have a variety of models, ask them to try to incorporate another groups approach.
-1. Allow students another ~5-10 min to revisit their model.
+1. Allow students another ~10-15 min to revisit their model.
 1. Regroup
     * Discuss additions to models
     * Provide validation points
@@ -106,6 +120,15 @@ Problem:
 
 Given steady time series data in column C, can you determine if the process is functioning properly?
 
+Questions to pose:
+
+* What does the data look like?
+* Would you consider the process to be "in control"?
+* What rules could you use to detect if a process is out of control?
+* Would you consider the variablity to be normally distributed? (∼N(μ,σ2))
+* How can you determine how close to normally distributed it is
+* What does normally distributed data look like?
+
 **Pass 1 - Investigate the data**
 
 6 Sigma - Control Charts Checks
@@ -114,15 +137,27 @@ CL = x_bar
 UCL = CL + 3 sigma
 LCL = CL - 3 sigma
 
-* If 1 point > 3 sigma
+**Control Tests**
 
-TODO: expand this section
+* [x] is < 3 sigma
+* [x] is > 3 sigma
+* [..] is 2/3 points > 2 sigma
+* [..] is 2/3 points < 2 sigma
+* [..] is 4/5 points > 1 sigma
+* [..] is 4/5 points < 1 sigma
+* [..] is 8/8 points > centerline
+* [..] is 8/8 points < centerline
 
-Concepts:
+**Centerline Shift Tests**
 
-* Process control
-* Statistical significance
-* Steady vs diurnal
+* [..] is 10/11 points > centerline
+* [..] is 10/11 points < centerline
+* [..] is 12/14 points > centerline
+* [..] is 12/14 points < centerline
+* [..] is 14/17 points > centerline
+* [..] is 14/17 points < centerline
+* [..] is 16/20 points > centerline
+* [..] is 16/20 points < centerline
 
 ****
 
@@ -145,3 +180,7 @@ Concepts:
 * Model Assessment
 
 
+```
+cat data.csv | cut -d ',' -f 3 | histogram
+cat data.csv | cut -d ',' -f 3 | python3 control_chart.py -m -2.964333 -s 0.563121
+```
