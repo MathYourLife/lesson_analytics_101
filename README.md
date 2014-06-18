@@ -17,6 +17,21 @@ At the end of the lesson, students should be able to answer the following questi
 1. Is the analysis repeatable? (by someone else)
 1. Are there limitations to the model's use?
 
+## Resources
+
+IPython Notebooks
+
+* [predictive modeling](http://mathyourlife.github.io/lesson_analytics_101/notebooks/prediction.html)
+* [process control](http://mathyourlife.github.io/lesson_analytics_101/notebooks/control-chart.html)
+* [clustering](http://mathyourlife.github.io/lesson_analytics_101/notebooks/clustering.html)
+
+Six Sigma
+
+* [Implementing Six Sigma - Second Edition](http://www.amazon.com/Implementing-Six-Sigma-Second-Edition/dp/0471265721)
+* [Control Charts](http://www.isixsigma.com/tools-templates/control-charts/)
+
+
+
 ## Lesson Plan
 
 ### Intro
@@ -53,11 +68,9 @@ Questions to pose:
 * What could be added to the model to improve it's accuracy?
 * Why are linearized models more prevalent?
 
+**Investigation**
 
-Data used here was created with function of the form
-$B = \left(m * A + b \right) + \left(c * e^{A/k} \right) + w$
-where
-$w ~ N(0, 1)$
+The IPython notebook [here](http://mathyourlife.github.io/lesson_analytics_101/notebooks/prediction.html) demonstrates some methods of data inspection.
 
 **Pass 1 - Rough modeling**
 
@@ -94,6 +107,11 @@ Characteristics of column B
 * Mostly uniform for values x < 25
 * Lower density when values x > 25
 
+Data used here was created with function of the form
+$B = \left(m * A + b \right) + \left(c * e^{A/k} \right) + w$
+where
+$w ~ N(0, 1)$
+
 Combined model
 
 $B = \left(-0.5 * A + 42 \right) + \left(c * e^{A/-10} \right) + w$
@@ -118,7 +136,7 @@ With additional insight, can you upgrade your current model to provide a more ac
 
 Problem:
 
-Given steady time series data in column C, can you determine if the process is functioning properly?
+Column C contains the measurements for a certain aspect of your process.  The process is expected to stay at a constant level, but the measurements contain a certain level of process and/or measurement noise.  The data as provided is assumed to be listed in the order it was measured.  Can you determine if the process is functioning properly?
 
 Questions to pose:
 
@@ -129,18 +147,15 @@ Questions to pose:
 * How can you determine how close to normally distributed it is
 * What does normally distributed data look like?
 
-**Pass 1 - Investigate the data**
-
-6 Sigma - Control Charts Checks
-
-CL = x_bar
-UCL = CL + 3 sigma
-LCL = CL - 3 sigma
+**Investigation**
 
 ```
 cat data.csv | cut -d ',' -f 3 | histogram
 cat data.csv | cut -d ',' -f 3 | python3 control_chart.py -m -2.964333 -s 0.563121
 ```
+
+The IPython notebook [here](http://mathyourlife.github.io/lesson_analytics_101/notebooks/control-chart.html) demonstrates some methods of data inspection.
+
 
 **Control Tests**
 
@@ -163,8 +178,6 @@ cat data.csv | cut -d ',' -f 3 | python3 control_chart.py -m -2.964333 -s 0.5631
 * [..] is 14/17 points < centerline
 * [..] is 16/20 points > centerline
 * [..] is 16/20 points < centerline
-
-**See IPython notebook for details on this section**
 
 ****
 
@@ -203,4 +216,6 @@ Questions to pose:
 * Principle Component Analysis
 * Model Assessment
 
-**See IPython notebook for details on this section**
+**Investigation**
+
+The IPython notebook [here](http://mathyourlife.github.io/lesson_analytics_101/notebooks/clustering.html) demonstrates some methods of data inspection.
