@@ -164,6 +164,8 @@ cat data.csv | cut -d ',' -f 3 | python3 control_chart.py -m -2.964333 -s 0.5631
 * [..] is 16/20 points > centerline
 * [..] is 16/20 points < centerline
 
+**See IPython notebook for details on this section**
+
 ****
 
 ### Unsupervised Clustering
@@ -200,3 +202,5 @@ Questions to pose:
 * KMeans clustering (concept and algorithm)
 * Principle Component Analysis
 * Model Assessment
+
+**See IPython notebook for details on this section**
