@@ -137,6 +137,11 @@ CL = x_bar
 UCL = CL + 3 sigma
 LCL = CL - 3 sigma
 
+```
+cat data.csv | cut -d ',' -f 3 | histogram
+cat data.csv | cut -d ',' -f 3 | python3 control_chart.py -m -2.964333 -s 0.563121
+```
+
 **Control Tests**
 
 * [x] is < 3 sigma
@@ -170,17 +175,28 @@ Data sets may sometimes contain multiple subgroups.  Under these conditions two 
 1. User predefines groups based on current knowledge of the system and allocates data points to the groups.
 1. User defines a method for grouping, and the groups are generated to best conform to the rules.
 
-TODO: expand this section
+Questions to pose:
 
-Concepts:
+* Are there subgroups to the data?
+* How confident are you in you conclusion?
+* If so how many subgroups do you think?
+* How would you quantify the difference between subgroups?
+* Do all data points in the sample conform to the group separation?
+* To the group separations for each column agree?
+* Do subgroups according to column 4 agree with column groupings for 5 and 6?
+* Can all the data be represented in a single chart?
+* Can we choose an objective method of creating the clusters?
+* Can the algorithm find additional subgroups?
+* Why does K-Means clustering group along a major axis?
+* Is there something we can do to improve the algorithm's ability to find subgroups?
+* How can we represent an n-dimensional data in less than an n dimensional space?
+* What methods can we use to reduce the complexity of the data?
+* What are the advantages and/or disadvantages to using dimensionality reduction?
+* How could you quantify any loss of fidelity?
+
+**Concepts**
 
 * Unsupervised learning
 * KMeans clustering (concept and algorithm)
 * Principle Component Analysis
 * Model Assessment
-
-
-```
-cat data.csv | cut -d ',' -f 3 | histogram
-cat data.csv | cut -d ',' -f 3 | python3 control_chart.py -m -2.964333 -s 0.563121
-```
