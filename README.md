@@ -1,2 +1,2 @@
 
-Contents moved to [https://github.com/MathYourLife/spouting-jibberish](MathYourLife/spouting-jibberish)
+Contents moved to [MathYourLife/spouting-jibberish](https://github.com/MathYourLife/spouting-jibberish)
